@@ -2,6 +2,7 @@ import pandas as pd
 import dearpygui.dearpygui as dpg
 from dearpygui import *
 import pyautogui as p
+import tkinter
 import csv
 import glob
 import os
@@ -11,15 +12,16 @@ path = "C:/Users/seppe/Desktop/Scan_Data"
 
 def Interface() :
     global inputFoutPotje
+    width, height = get_screen_dimensions_tkinter()
+
     dpg.create_context()
-    dpg.create_viewport(width=2000, height=1000)
+    dpg.create_viewport(width=width, height=height)
     dpg.setup_dearpygui()
 
-
-    with dpg.window(label="Scanner Interface",width=2000, height=1000):
+    with dpg.window(label="Scanner Interface", width=width, height=height):
         with dpg.group(horizontal=True):
-            startbtn = dpg.add_button(label="Start", callback=startScanning, width = 200, height = 50)
-            stopbtn = dpg.add_button(label="stop", callback=startScanning, width = 200, height = 50)
+            startbtn = dpg.add_button(label="Start", callback=startScanning, width = 200, height = 50, pos=[(width/2)-210,50])
+            stopbtn = dpg.add_button(label="stop", callback=startScanning, width = 200, height = 50, pos=[width/2,50])
         dpg.add_button(label="Nieuwe Doos", callback = combineCsv, width = 200, height = 50)
         inputFoutPotje = dpg.add_input_text(label = "nr fout potje")
         dpg.add_button(label="Fout potje", callback=searchForCode, width = 200, height = 50)
@@ -42,6 +44,16 @@ def Interface() :
     dpg.start_dearpygui()
     dpg.destroy_context()
     
+def get_screen_dimensions_tkinter():
+    root = tkinter.Tk()
+    root.withdraw()
+
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+
+    root.destroy() 
+    return screen_width, screen_height
+
 def startScanning() :
     p.click(x=432, y=1051)
     p.click(x=59, y=961)

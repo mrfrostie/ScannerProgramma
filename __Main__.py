@@ -174,11 +174,38 @@ def searchForCode() :
     combined_df = pd.concat(df_list, ignore_index=True).drop_duplicates(subset="Datacode-1:String", keep="first")
     
     combined_df["Datacode-1:String"] = combined_df["Datacode-1:String"].str.replace("","")
+    combined_df = combined_df[['Datacode-1:String']]  
+
+    combined_df["UDI-DI"] = combined_df["Datacode-1:String"].str.slice(2,16)
+    combined_df["EXPIRY DATE"] = combined_df["Datacode-1:String"].str.slice(18,24)
+    
+    def get_q3_q4_parts(s):
+        if not isinstance(s, str):
+            return None, None 
+        
+        start_q3 = 26
+        end_q3 = len(s) - 14
+        q3_val = s[start_q3:end_q3] if start_q3 < end_q3 else '' 
+
+        start_q4 = len(s) - 12
+        q4_val = s[start_q4:] if start_q4 >= 0 else ''
+
+        return q3_val, q4_val
+
+    q3_q4_results = combined_df["Datacode-1:String"].apply(lambda s: get_q3_q4_parts(s))
+    combined_df[['LOT', 'UNIQUE NR']] = pd.DataFrame(q3_q4_results.tolist(), index=combined_df.index)
+
+    combined_df = combined_df.rename(columns={"Datacode-1:String" : "UDI"})
+
+    Final_fileName = f'(01){combined_df.iloc[0]["UDI-DI"]}(17){combined_df.iloc[0]["EXPIRY DATE"]}(10){combined_df.iloc[0]["LOT"]}(21){combined_df.iloc[0]["UNIQUE NR"]}.csv'
+
+    combined_df = combined_df.drop(0)
 
     try:
-        df_NoFoutPotje = combined_df[combined_df["Datacode-1:String"] != FoutPotje].copy()
+        df_NoFoutPotje = combined_df[combined_df["UDI"] != FoutPotje].copy()
     except Exception as e:
         print(f"nr {FoutPotje} not found")
+
 
     output_directory = "C:/Users/seppe/Desktop/ScannerProgramma"
     output_filename = "combined_scan_data.csv"
@@ -192,7 +219,7 @@ def searchForCode() :
     writer = csv.writer(open("output.csv", 'w'), delimiter=';')
     writer.writerows(reader)
 
-    with open('output.csv') as input, open('ouput2.csv', 'w', newline='') as output:
+    with open('output.csv') as input, open(Final_fileName, 'w', newline='') as output:
         writer = csv.writer(output)
         for row in csv.reader(input):
             if any(field.strip() for field in row):

@@ -1,14 +1,53 @@
 import pandas as pd
 import dearpygui.dearpygui as dpg
+from dearpygui import *
+import pyautogui as p
 import csv
 import glob
 import os
 
-inputFoutPotje = ""
+
+path = "C:/Users/seppe/Desktop/Scan_Data"
+
+def Interface() :
+    global inputFoutPotje
+    dpg.create_context()
+    dpg.create_viewport(width=2000, height=1000)
+    dpg.setup_dearpygui()
+
+
+    with dpg.window(label="Scanner Interface",width=2000, height=1000):
+        with dpg.group(horizontal=True):
+            startbtn = dpg.add_button(label="Start", callback=startScanning, width = 200, height = 50)
+            stopbtn = dpg.add_button(label="stop", width = 200, height = 50)
+        dpg.add_button(label="Nieuwe Doos", callback = combineCsv, width = 200, height = 50)
+        inputFoutPotje = dpg.add_input_text(label = "nr fout potje")
+        dpg.add_button(label="Fout potje", callback=searchForCode, width = 200, height = 50)
+
+    with dpg.theme() as startButtonTheme:
+        with dpg.theme_component(dpg.mvButton):
+            dpg.add_theme_color(dpg.mvThemeCol_Button, (0, 255, 0), category=dpg.mvThemeCat_Core)
+            dpg.add_theme_color(dpg.mvThemeCol_Text, (0, 0, 0), category=dpg.mvThemeCat_Core)
+    
+    with dpg.theme() as stopButtonTheme:
+        with dpg.theme_component(dpg.mvButton):
+            dpg.add_theme_color(dpg.mvThemeCol_Button, (255, 0, 0), category=dpg.mvThemeCat_Core)
+            dpg.add_theme_color(dpg.mvThemeCol_Text, (0, 0, 0), category=dpg.mvThemeCat_Core)
+
+    dpg.bind_item_theme(startbtn, startButtonTheme)
+    dpg.bind_item_theme(stopbtn, stopButtonTheme)
+    dpg.show_viewport()
+    dpg.set_global_font_scale(1.5)
+    dpg.maximize_viewport()
+    dpg.start_dearpygui()
+    dpg.destroy_context()
+    
+def startScanning() :
+    p.click(x=710, y=1048)
+    p.click(x=59, y=961)
+    p.click(x=771, y=1048)
 
 def combineCsv():
-    path = "C:/Users/ww-in/Desktop/scan_Data"
-    
     all_files = glob.glob(os.path.join(path, "*.csv"))
 
     if not all_files:
@@ -29,8 +68,10 @@ def combineCsv():
         return 
 
     combined_df = pd.concat(df_list, ignore_index=True).drop_duplicates(subset="Datacode-1:String", keep="first")
+
+    combined_df["Datacode-1:String"] = combined_df["Datacode-1:String"].str.replace("","")
     
-    output_directory = "C:/Users/ww-in/Desktop/Programma-Scanner"
+    output_directory = "C:/Users/seppe/Desktop/ScannerProgramma"
     output_filename = "combined_scan_data.csv"
     
     os.makedirs(output_directory, exist_ok=True) 
@@ -42,12 +83,18 @@ def combineCsv():
     writer = csv.writer(open("output.csv", 'w'), delimiter=';')
     writer.writerows(reader)
 
+    with open('output.csv') as input, open('ouput2.csv', 'w', newline='') as output:
+        writer = csv.writer(output)
+        for row in csv.reader(input):
+            if any(field.strip() for field in row):
+                writer.writerow(row)
+
+    os.remove("output.csv")
+
     print(f"\nSuccessfully combined {len(all_files)} CSV files into: {output_filepath}")
 
-def searchForCode(inputFoutPotje) :
-    FoutPotje = inputFoutPotje
-
-    path = "C:/Users/ww-in/Desktop/scan_Data"
+def searchForCode() :
+    FoutPotje = dpg.get_value(inputFoutPotje)
     
     all_files = glob.glob(os.path.join(path, "*.csv"))
 
@@ -70,12 +117,14 @@ def searchForCode(inputFoutPotje) :
 
     combined_df = pd.concat(df_list, ignore_index=True).drop_duplicates(subset="Datacode-1:String", keep="first")
     
+    combined_df["Datacode-1:String"] = combined_df["Datacode-1:String"].str.replace("","")
+
     try:
         df_NoFoutPotje = combined_df[combined_df["Datacode-1:String"] != FoutPotje].copy()
     except Exception as e:
         print(f"nr {FoutPotje} not found")
 
-    output_directory = "C:/Users/ww-in/Desktop/Programma-Scanner"
+    output_directory = "C:/Users/seppe/Desktop/ScannerProgramma"
     output_filename = "combined_scan_data.csv"
     
     os.makedirs(output_directory, exist_ok=True) 
@@ -86,22 +135,18 @@ def searchForCode(inputFoutPotje) :
     reader = csv.reader(open("combined_scan_data.csv", "r"), delimiter=',')
     writer = csv.writer(open("output.csv", 'w'), delimiter=';')
     writer.writerows(reader)
+
+    with open('output.csv') as input, open('ouput2.csv', 'w', newline='') as output:
+        writer = csv.writer(output)
+        for row in csv.reader(input):
+            if any(field.strip() for field in row):
+                writer.writerow(row)
+
+    os.remove("output.csv")
     
     print(f"\nSuccessfully combined {len(all_files)} CSV files into: {output_filepath}")
 
-def Interface() :
-    dpg.create_context()
-    dpg.create_viewport(width=600, height=200)
-    dpg.setup_dearpygui()
 
-    with dpg.window(label="Scanner Interface",width=600, height=200):
-        dpg.add_button(label="CombineCsv", callback = combineCsv, width = 100, height = 40)
-        inputFoutPotje = dpg.add_input_text(label = "nr fout potje")
-        dpg.add_button(label="Fout potje", callback=searchForCode, width = 100, height = 40)
-
-    dpg.show_viewport()
-    dpg.start_dearpygui()
-    dpg.destroy_context()
 
 if __name__ == "__main__":
     #combineCsv()

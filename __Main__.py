@@ -19,7 +19,7 @@ def Interface() :
     with dpg.window(label="Scanner Interface",width=2000, height=1000):
         with dpg.group(horizontal=True):
             startbtn = dpg.add_button(label="Start", callback=startScanning, width = 200, height = 50)
-            stopbtn = dpg.add_button(label="stop", width = 200, height = 50)
+            stopbtn = dpg.add_button(label="stop", callback=startScanning, width = 200, height = 50)
         dpg.add_button(label="Nieuwe Doos", callback = combineCsv, width = 200, height = 50)
         inputFoutPotje = dpg.add_input_text(label = "nr fout potje")
         dpg.add_button(label="Fout potje", callback=searchForCode, width = 200, height = 50)

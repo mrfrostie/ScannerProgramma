@@ -5,7 +5,7 @@ import pyautogui as p
 import csv
 import glob
 import os
-
+import re 
 
 path = "C:/Users/seppe/Desktop/Scan_Data"
 
@@ -70,8 +70,13 @@ def combineCsv():
     combined_df = pd.concat(df_list, ignore_index=True).drop_duplicates(subset="Datacode-1:String", keep="first")
 
     combined_df["Datacode-1:String"] = combined_df["Datacode-1:String"].str.replace("","")
-    combined_df.drop(combined_df.columns.difference(['Datacode-1:String']), 1, inplace=True)
+    combined_df = combined_df[['Datacode-1:String']]  
     
+    combined_df["Q1"] = combined_df["Datacode-1:String"].str.slice(2,16)
+    combined_df["Q2"] = combined_df["Datacode-1:String"].str.slice(18,24)
+    combined_df["Q3"] = combined_df["Datacode-1:String"].str.slice(26, combined_df["Datacode-1:String"].str.len() - 14 )
+    combined_df["Q4"] = combined_df["Datacode-1:String"].str.slice(combined_df["Datacode-1:String"].str.len() - 12)
+
     output_directory = "C:/Users/seppe/Desktop/ScannerProgramma"
     output_filename = "combined_scan_data.csv"
     
@@ -79,6 +84,7 @@ def combineCsv():
 
     output_filepath = os.path.join(output_directory, output_filename)
     combined_df.to_csv(output_filepath, index=False)
+
     
     reader = csv.reader(open("combined_scan_data.csv", "r"), delimiter=',')
     writer = csv.writer(open("output.csv", 'w'), delimiter=';')
@@ -154,6 +160,6 @@ def searchForCode() :
     print(f"\nSuccessfully combined {len(all_files)} CSV files into: {output_filepath}")
 
 if __name__ == "__main__":
-    #combineCsv()
+    combineCsv()
     #searchForCode()
-    Interface()
+    #Interface()

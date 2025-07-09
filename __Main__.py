@@ -14,6 +14,8 @@ def Interface() :
     global inputFoutPotje
     width, height = get_screen_dimensions_tkinter()
 
+    height -= 80
+
     dpg.create_context()
     dpg.create_viewport(width=width, height=height)
     dpg.setup_dearpygui()
@@ -22,9 +24,14 @@ def Interface() :
         with dpg.group(horizontal=True):
             startbtn = dpg.add_button(label="Start", callback=startScanning, width = 200, height = 50, pos=[(width/2)-210,50])
             stopbtn = dpg.add_button(label="stop", callback=startScanning, width = 200, height = 50, pos=[width/2,50])
+
+
         dpg.add_button(label="Nieuwe Doos", callback = combineCsv, width = 200, height = 50)
         inputFoutPotje = dpg.add_input_text(label = "nr fout potje")
         dpg.add_button(label="Fout potje", callback=searchForCode, width = 200, height = 50)
+
+        with dpg.group():
+            EstopBtn = dpg.add_button(label="Emergency Stop", callback=Estop, width = 200, height = 50, pos=[width - 210, height - 60])
 
     with dpg.theme() as startButtonTheme:
         with dpg.theme_component(dpg.mvButton):
@@ -38,12 +45,16 @@ def Interface() :
 
     dpg.bind_item_theme(startbtn, startButtonTheme)
     dpg.bind_item_theme(stopbtn, stopButtonTheme)
+    dpg.bind_item_theme(EstopBtn, stopButtonTheme)
     dpg.show_viewport()
     dpg.set_global_font_scale(1.5)
     dpg.maximize_viewport()
     dpg.start_dearpygui()
     dpg.destroy_context()
-    
+
+def Estop() :
+    os._exit(0)
+
 def get_screen_dimensions_tkinter():
     root = tkinter.Tk()
     root.withdraw()

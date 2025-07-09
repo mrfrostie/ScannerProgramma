@@ -72,8 +72,8 @@ def combineCsv():
     combined_df["Datacode-1:String"] = combined_df["Datacode-1:String"].str.replace("","")
     combined_df = combined_df[['Datacode-1:String']]  
     
-    combined_df["Q1"] = combined_df["Datacode-1:String"].str.slice(2,16)
-    combined_df["Q2"] = combined_df["Datacode-1:String"].str.slice(18,24)
+    combined_df["UDI-DI"] = combined_df["Datacode-1:String"].str.slice(2,16)
+    combined_df["EXPIRY DATE"] = combined_df["Datacode-1:String"].str.slice(18,24)
     
     def get_q3_q4_parts(s):
         if not isinstance(s, str):
@@ -89,7 +89,13 @@ def combineCsv():
         return q3_val, q4_val
 
     q3_q4_results = combined_df["Datacode-1:String"].apply(lambda s: get_q3_q4_parts(s))
-    combined_df[['Q3', 'Q4']] = pd.DataFrame(q3_q4_results.tolist(), index=combined_df.index)
+    combined_df[['LOT', 'UNIQUE NR']] = pd.DataFrame(q3_q4_results.tolist(), index=combined_df.index)
+
+    combined_df = combined_df.rename(columns={"Datacode-1:String" : "UDI"})
+
+    Final_fileName = f'(01){combined_df.iloc[0]["UDI-DI"]}(17){combined_df.iloc[0]["EXPIRY DATE"]}(10){combined_df.iloc[0]["LOT"]}(21){combined_df.iloc[0]["UNIQUE NR"]}.csv'
+
+    combined_df = combined_df.drop(0)
 
     output_directory = "C:/Users/seppe/Desktop/ScannerProgramma"
     output_filename = "combined_scan_data.csv"
@@ -104,7 +110,7 @@ def combineCsv():
     writer = csv.writer(open("output.csv", 'w'), delimiter=';')
     writer.writerows(reader)
 
-    with open('output.csv') as input, open('ouput2.csv', 'w', newline='') as output:
+    with open('output.csv') as input, open(Final_fileName, 'w', newline='') as output:
         writer = csv.writer(output)
         for row in csv.reader(input):
             if any(field.strip() for field in row):

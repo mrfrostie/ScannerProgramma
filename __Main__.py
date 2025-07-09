@@ -74,8 +74,22 @@ def combineCsv():
     
     combined_df["Q1"] = combined_df["Datacode-1:String"].str.slice(2,16)
     combined_df["Q2"] = combined_df["Datacode-1:String"].str.slice(18,24)
-    combined_df["Q3"] = combined_df["Datacode-1:String"].str.slice(26, combined_df["Datacode-1:String"].str.len() - 14 )
-    combined_df["Q4"] = combined_df["Datacode-1:String"].str.slice(combined_df["Datacode-1:String"].str.len() - 12)
+    
+    def get_q3_q4_parts(s):
+        if not isinstance(s, str):
+            return None, None 
+        
+        start_q3 = 26
+        end_q3 = len(s) - 14
+        q3_val = s[start_q3:end_q3] if start_q3 < end_q3 else '' 
+
+        start_q4 = len(s) - 12
+        q4_val = s[start_q4:] if start_q4 >= 0 else ''
+
+        return q3_val, q4_val
+
+    q3_q4_results = combined_df["Datacode-1:String"].apply(lambda s: get_q3_q4_parts(s))
+    combined_df[['Q3', 'Q4']] = pd.DataFrame(q3_q4_results.tolist(), index=combined_df.index)
 
     output_directory = "C:/Users/seppe/Desktop/ScannerProgramma"
     output_filename = "combined_scan_data.csv"

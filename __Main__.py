@@ -180,6 +180,6 @@ def searchForCode() :
     print(f"\nSuccessfully combined {len(all_files)} CSV files into: {output_filepath}")
 
 if __name__ == "__main__":
-    combineCsv()
+    #combineCsv()
     #searchForCode()
-    #Interface()
+    Interface()

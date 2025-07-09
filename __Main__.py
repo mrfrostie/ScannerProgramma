@@ -43,9 +43,9 @@ def Interface() :
     dpg.destroy_context()
     
 def startScanning() :
-    p.click(x=710, y=1048)
+    p.click(x=432, y=1051)
     p.click(x=59, y=961)
-    p.click(x=771, y=1048)
+    p.click(x=479, y=1044)
 
 def combineCsv():
     all_files = glob.glob(os.path.join(path, "*.csv"))
@@ -70,6 +70,7 @@ def combineCsv():
     combined_df = pd.concat(df_list, ignore_index=True).drop_duplicates(subset="Datacode-1:String", keep="first")
 
     combined_df["Datacode-1:String"] = combined_df["Datacode-1:String"].str.replace("","")
+    combined_df.drop(combined_df.columns.difference(['Datacode-1:String']), 1, inplace=True)
     
     output_directory = "C:/Users/seppe/Desktop/ScannerProgramma"
     output_filename = "combined_scan_data.csv"
@@ -92,6 +93,12 @@ def combineCsv():
     os.remove("output.csv")
 
     print(f"\nSuccessfully combined {len(all_files)} CSV files into: {output_filepath}")
+
+    #for filename in os.listdir(path):
+    #    file_path = os.path.join(path, filename)
+    #    if os.path.isfile(file_path):
+    #       os.remove(file_path)
+    #       print(filename, "is removed")
 
 def searchForCode() :
     FoutPotje = dpg.get_value(inputFoutPotje)
@@ -145,8 +152,6 @@ def searchForCode() :
     os.remove("output.csv")
     
     print(f"\nSuccessfully combined {len(all_files)} CSV files into: {output_filepath}")
-
-
 
 if __name__ == "__main__":
     #combineCsv()

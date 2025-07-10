@@ -7,7 +7,6 @@ import csv
 import glob
 import os
 
-
 path = "C:/Users/seppe/Desktop/Scan_Data"
 _filename = ""
 
@@ -101,7 +100,6 @@ def Interface() :
         with dpg.theme_component(dpg.mvButton):
             dpg.add_theme_color(dpg.mvThemeCol_Button, (72, 72, 74), category=dpg.mvThemeCat_Core)
 
-
     with dpg.window(label="Scanner Interface", width=width, height=height):
         with dpg.group(horizontal=True):
             startbtn = dpg.add_button(label="Start", tag="toggle_button" ,callback=toggle_buttonStart_callback, width = 200, height = 50, pos=[(width/2)-100,50])
@@ -125,7 +123,6 @@ def Interface() :
         with dpg.group():
             EstopBtn = dpg.add_button(label="Emergency Stop", callback=Estop, width = 200, height = 50, pos=[width - 210, height - 60])
             statustext = dpg.add_text(default_value=f"Status: Stopped", pos=[10, height - 60])
-
 
     dpg.bind_item_theme(startbtn, startButtonTheme)
     dpg.bind_item_theme(EstopBtn, stopButtonTheme)
@@ -206,7 +203,6 @@ def combineCsv():
     output_filepath = os.path.join(output_directory, output_filename)
     combined_df.to_csv(output_filepath, index=False)
 
-    
     reader = csv.reader(open("combined_scan_data.csv", "r"), delimiter=',')
     writer = csv.writer(open("output.csv", 'w'), delimiter=';')
     writer.writerows(reader)
@@ -221,11 +217,11 @@ def combineCsv():
 
     print(f"\nSuccessfully combined {len(all_files)} CSV files into: {output_filepath}")
 
-    #for filename in os.listdir(path):
-    #    file_path = os.path.join(path, filename)
-    #    if os.path.isfile(file_path):
-    #       os.remove(file_path)
-    #       print(filename, "is removed")
+    for filename in os.listdir(path):
+        file_path = os.path.join(path, filename)
+        if os.path.isfile(file_path):
+           os.remove(file_path)
+           print(filename, "is removed")
 
     return Final_fileName
 
@@ -346,7 +342,6 @@ def Verwijderen(_filename):
 
     merged_df = pd.merge(complete_df, combined_df, on='Datacode-1:String', how='left', indicator=True)
     df1_rows_not_in_df2 = merged_df[merged_df['_merge'] == 'left_only'].drop(columns='_merge')
-
 
     df1_rows_not_in_df2["UDI-DI"] = df1_rows_not_in_df2["Datacode-1:String"].str.slice(2,16)
     df1_rows_not_in_df2["EXPIRY DATE"] = df1_rows_not_in_df2["Datacode-1:String"].str.slice(18,24)

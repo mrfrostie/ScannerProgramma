@@ -6,7 +6,7 @@ import tkinter
 import csv
 import glob
 import os
-import re 
+
 
 path = "C:/Users/seppe/Desktop/Scan_Data"
 
@@ -20,18 +20,23 @@ def Interface() :
     dpg.create_viewport(width=width, height=height)
     dpg.setup_dearpygui()
 
-    with dpg.window(label="Scanner Interface", width=width, height=height):
-        with dpg.group(horizontal=True):
-            startbtn = dpg.add_button(label="Start", callback=startScanning, width = 200, height = 50, pos=[(width/2)-210,50])
-            stopbtn = dpg.add_button(label="stop", callback=startScanning, width = 200, height = 50, pos=[width/2,50])
+    def toggle_button_callback(sender, data):
+        p.click(x=432, y=1051)
+        p.click(x=59, y=961)
+        p.click(x=479, y=1044)
 
-
-        dpg.add_button(label="Nieuwe Doos", callback = combineCsv, width = 200, height = 50)
-        inputFoutPotje = dpg.add_input_text(label = "nr fout potje")
-        dpg.add_button(label="Fout potje", callback=searchForCode, width = 200, height = 50)
-
-        with dpg.group():
-            EstopBtn = dpg.add_button(label="Emergency Stop", callback=Estop, width = 200, height = 50, pos=[width - 210, height - 60])
+        button_data = dpg.get_item_user_data(sender)
+        current_state = button_data['state']
+        if current_state:
+            dpg.bind_item_theme(sender, button_data['off_theme'])
+            dpg.set_item_label(startbtn, "Start")
+            button_data['state'] = False
+        else:
+            # Turn on
+            dpg.bind_item_theme(sender, button_data['on_theme'])
+            dpg.set_item_label(startbtn, "Stop")
+            button_data['state'] = True
+        dpg.set_item_user_data(sender, button_data)
 
     with dpg.theme() as startButtonTheme:
         with dpg.theme_component(dpg.mvButton):
@@ -43,8 +48,24 @@ def Interface() :
             dpg.add_theme_color(dpg.mvThemeCol_Button, (255, 0, 0), category=dpg.mvThemeCat_Core)
             dpg.add_theme_color(dpg.mvThemeCol_Text, (0, 0, 0), category=dpg.mvThemeCat_Core)
 
+    with dpg.window(label="Scanner Interface", width=width, height=height):
+        with dpg.group(horizontal=True):
+            startbtn = dpg.add_button(label="Start", tag="toggle_button" ,callback=toggle_button_callback, width = 200, height = 50, pos=[(width/2)-100,50])
+            button_data = {'state': False, 'on_theme': stopButtonTheme, 'off_theme': startButtonTheme}
+            dpg.set_item_user_data("toggle_button", button_data)
+            dpg.bind_item_theme("toggle_button", stopButtonTheme)
+
+
+        dpg.add_button(label="Nieuwe Doos", callback = combineCsv, width = 200, height = 50)
+        inputFoutPotje = dpg.add_input_text(label = "nr fout potje")
+        dpg.add_button(label="Fout potje", callback=searchForCode, width = 200, height = 50)
+
+        with dpg.group():
+            EstopBtn = dpg.add_button(label="Emergency Stop", callback=Estop, width = 200, height = 50, pos=[width - 210, height - 60])
+            statustext = dpg.add_text(default_value=f"Status: Stopped", pos=[10, height - 60])
+
+
     dpg.bind_item_theme(startbtn, startButtonTheme)
-    dpg.bind_item_theme(stopbtn, stopButtonTheme)
     dpg.bind_item_theme(EstopBtn, stopButtonTheme)
     dpg.show_viewport()
     dpg.set_global_font_scale(1.5)
@@ -64,11 +85,6 @@ def get_screen_dimensions_tkinter():
 
     root.destroy() 
     return screen_width, screen_height
-
-def startScanning() :
-    p.click(x=432, y=1051)
-    p.click(x=59, y=961)
-    p.click(x=479, y=1044)
 
 def combineCsv():
     all_files = glob.glob(os.path.join(path, "*.csv"))

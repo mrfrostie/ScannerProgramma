@@ -5,6 +5,7 @@ import pyautogui as p
 import tkinter
 import csv
 import glob
+import time
 import os
 
 path = "C:/Users/seppe/Desktop/Scan_Data"
@@ -64,6 +65,8 @@ def Interface() :
             # Turn on
             dpg.bind_item_theme(sender, button_data['on_theme'])
             dpg.set_value(statustext, "Status: Verwijderen")
+            time.sleep(0.5)
+            dpg.set_value(statustext, "Status: Stopped")
             button_data['state'] = True
         dpg.set_item_user_data(sender, button_data)
 
@@ -393,7 +396,7 @@ def Verwijderen(_filename):
            print(filename, "is removed")
 
 if __name__ == "__main__":
-    combineCsv()
+    #combineCsv()
     #searchForCode()
-    #Interface()
+    Interface()
     #Verwijderen(_filename)

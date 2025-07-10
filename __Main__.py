@@ -15,6 +15,12 @@ def StartScanning() :
     p.click(x=59, y=961)
     p.click(x=479, y=1044)
 
+    for filename in os.listdir(path):
+        file_path = os.path.join(path, filename)
+        if os.path.isfile(file_path):
+           os.remove(file_path)
+           print(filename, "is removed")
+
 def Interface() :
     global inputFoutPotje
     width, height = get_screen_dimensions_tkinter()
@@ -79,8 +85,8 @@ def Interface() :
         dpg.set_item_user_data(sender, button_data)
 
     def eindeDoos() :
-        #StartScanning()
-        _filename = combineCsv()
+        StartScanning()
+        combineCsv()
         
     with dpg.theme() as startButtonTheme:
         with dpg.theme_component(dpg.mvButton):
@@ -106,8 +112,9 @@ def Interface() :
             button_data = {'state': False, 'on_theme': stopButtonTheme, 'off_theme': startButtonTheme}
             dpg.set_item_user_data("toggle_button", button_data)
             dpg.bind_item_theme("toggle_button", stopButtonTheme)
-
-        dpg.add_button(label="Einde Doos", callback = eindeDoos, width = 200, height = 50)
+        with dpg.group(horizontal=True):
+            dpg.add_button(label="Einde Doos", callback = eindeDoos, width = 200, height = 50)
+            dpg.add_button(label="Nieuwe Doos", callback = StartScanning, width = 200, height = 50)
         inputFoutPotje = dpg.add_input_text(label = "nr fout potje")
 
         with dpg.group(horizontal=True):
@@ -146,6 +153,7 @@ def get_screen_dimensions_tkinter():
     return screen_width, screen_height
 
 def combineCsv():
+    global _filename
     all_files = glob.glob(os.path.join(path, "*.csv"))
 
     if not all_files:
@@ -184,16 +192,25 @@ def combineCsv():
         start_q4 = len(s) - 12
         q4_val = s[start_q4:] if start_q4 >= 0 else ''
 
-        return q3_val, q4_val
+        start_q5 = len(s) - 10
+        q5_val = s[start_q5:] if start_q5 >= 0 else ''
+
+        return q3_val, q4_val, q5_val
 
     q3_q4_results = combined_df["Datacode-1:String"].apply(lambda s: get_q3_q4_parts(s))
-    combined_df[['LOT', 'UNIQUE NR']] = pd.DataFrame(q3_q4_results.tolist(), index=combined_df.index)
+    combined_df[['LOT', 'UNIQUE NR', 'ORDER']] = pd.DataFrame(q3_q4_results.tolist(), index=combined_df.index)
 
     combined_df = combined_df.rename(columns={"Datacode-1:String" : "UDI"})
+
+    combined_df = combined_df[combined_df['UDI'].str.len().ge(30).fillna(False)].copy()
+
+    combined_df = combined_df.sort_values('ORDER')
 
     Final_fileName = f'(01){combined_df.iloc[0]["UDI-DI"]}(17){combined_df.iloc[0]["EXPIRY DATE"]}(10){combined_df.iloc[0]["LOT"]}(21){combined_df.iloc[0]["UNIQUE NR"]}.csv'
 
     combined_df = combined_df.drop(0)
+
+    combined_df = combined_df.drop("ORDER", axis='columns')
 
     output_directory = "C:/Users/seppe/Desktop/ScannerProgramma"
     output_filename = "combined_scan_data.csv"
@@ -223,6 +240,7 @@ def combineCsv():
            os.remove(file_path)
            print(filename, "is removed")
 
+    _filename = Final_fileName
     return Final_fileName
 
 def searchForCode() :
@@ -366,10 +384,16 @@ def Verwijderen(_filename):
 
     #Final_fileName = f'(01){df1_rows_not_in_df2.iloc[0]["UDI-DI"]}(17){df1_rows_not_in_df2.iloc[0]["EXPIRY DATE"]}(10){df1_rows_not_in_df2.iloc[0]["LOT"]}(21){df1_rows_not_in_df2.iloc[0]["UNIQUE NR"]}.csv'
 
-    df1_rows_not_in_df2.to_csv(_filename, index=False, sep=';')
+    df1_rows_not_in_df2.to_csv(f"{_filename}_FouteVerwijderd.csv", index=False, sep=';')
+
+    for filename in os.listdir(path):
+        file_path = os.path.join(path, filename)
+        if os.path.isfile(file_path):
+           os.remove(file_path)
+           print(filename, "is removed")
 
 if __name__ == "__main__":
-    #_filename = combineCsv()
+    combineCsv()
     #searchForCode()
-    Interface()
+    #Interface()
     #Verwijderen(_filename)

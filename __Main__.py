@@ -62,6 +62,23 @@ def Interface() :
             button_data['state'] = True
         dpg.set_item_user_data(sender, button_data)
 
+    def toggle_buttonStartScannenVerwijderen(sender, data):
+        StartScanning()
+
+        button_data = dpg.get_item_user_data(sender)
+        current_state = button_data['state']
+        if current_state:
+            # Turn off
+            dpg.bind_item_theme(sender, button_data['off_theme'])
+            dpg.set_value(statustext, "Status: Stopped")
+            button_data['state'] = False
+        else:
+            # Turn on
+            dpg.bind_item_theme(sender, button_data['on_theme'])
+            dpg.set_value(statustext, "Status: Started scanning for Deleting")
+            button_data['state'] = True
+        dpg.set_item_user_data(sender, button_data)
+
     def eindeDoos() :
         #StartScanning()
         _filename = combineCsv()
@@ -96,6 +113,10 @@ def Interface() :
         inputFoutPotje = dpg.add_input_text(label = "nr fout potje")
 
         with dpg.group(horizontal=True):
+            dpg.add_button(label="Start/stop scannen (Verwijderen)", tag="Toggle_ScanStartVerwijder", callback=toggle_buttonStartScannenVerwijderen, width = 350, height = 50)
+            button_data = {'state': False, 'on_theme': VerwijderButtonOff, 'off_theme': VerwijderButtonOn}
+            dpg.set_item_user_data("Toggle_ScanStartVerwijder", button_data)
+            dpg.bind_item_theme("Toggle_ScanStartVerwijder", VerwijderButtonOn)
             VerwijderBtn = dpg.add_button(label="Verwijderen", tag="Toggle_verwijderBtn", callback=toggle_buttonVerwijderen_callback, width = 200, height = 50)
             button_data = {'state': False, 'on_theme': VerwijderButtonOff, 'off_theme': VerwijderButtonOn}
             dpg.set_item_user_data("Toggle_verwijderBtn", button_data)
@@ -289,7 +310,7 @@ def searchForCode() :
     print(f"\nSuccessfully combined {len(all_files)} CSV files into: {output_filepath}")
 
 def Verwijderen(_filename):
-    all_files = glob.glob(os.path.join("TeverwijderenTest", "*.csv"))
+    all_files = glob.glob(os.path.join(path, "*.csv"))
 
     if not all_files:
         print(f"No CSV files found in the directory: {path}")

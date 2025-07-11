@@ -10,11 +10,13 @@ import os
 
 path = "C:/Users/seppe/Desktop/Scan_Data"
 _filename = ""
+status = ""
 
 def StartScanning() :
-    p.click(x=432, y=1051)
-    p.click(x=59, y=961)
-    p.click(x=479, y=1044)
+    if status != "Stopped" : 
+        p.click(x=432, y=1051)
+        p.click(x=59, y=961)
+        p.click(x=479, y=1044)
 
     for filename in os.listdir(path):
         file_path = os.path.join(path, filename)
@@ -24,6 +26,7 @@ def StartScanning() :
 
 def Interface() :
     global inputFoutPotje
+    global status
     width, height = get_screen_dimensions_tkinter()
 
     height -= 80
@@ -33,7 +36,7 @@ def Interface() :
     dpg.setup_dearpygui()
 
     def toggle_buttonStart_callback(sender, data):
-        
+        global status
         StartScanning()
 
         button_data = dpg.get_item_user_data(sender)
@@ -42,6 +45,7 @@ def Interface() :
             dpg.bind_item_theme(sender, button_data['off_theme'])
             dpg.set_item_label(startbtn, "Start")
             dpg.set_value(statustext, "Status: Stopped")
+            status = "Stopped"
             button_data['state'] = False
         else:
             # Turn on
@@ -53,13 +57,14 @@ def Interface() :
 
     def toggle_buttonVerwijderen_callback(sender, data):
         Verwijderen(_filename)
-
+        global status
         button_data = dpg.get_item_user_data(sender)
         current_state = button_data['state']
         if current_state:
             # Turn off
             dpg.bind_item_theme(sender, button_data['off_theme'])
             dpg.set_value(statustext, "Status: Stopped")
+            status = "Stopped"
             button_data['state'] = False
         else:
             # Turn on
@@ -67,18 +72,20 @@ def Interface() :
             dpg.set_value(statustext, "Status: Verwijderen")
             time.sleep(0.5)
             dpg.set_value(statustext, "Status: Stopped")
+            status = "Stopped"
             button_data['state'] = True
         dpg.set_item_user_data(sender, button_data)
 
     def toggle_buttonStartScannenVerwijderen(sender, data):
         StartScanning()
-
+        global status
         button_data = dpg.get_item_user_data(sender)
         current_state = button_data['state']
         if current_state:
             # Turn off
             dpg.bind_item_theme(sender, button_data['off_theme'])
             dpg.set_value(statustext, "Status: Stopped")
+            status ="Stopped"
             button_data['state'] = False
         else:
             # Turn on

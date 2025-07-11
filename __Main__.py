@@ -214,13 +214,17 @@ def combineCsv():
 
     combined_df = combined_df[combined_df['UDI'].str.len().ge(30).fillna(False)].copy()
 
-    combined_df = combined_df.sort_values('ORDER', ignore_index=True)
+    combined_df = combined_df.sort_values('ORDER', ignore_index=True, ascending=False)
 
     Final_fileName = f'(01){combined_df.iloc[0]["UDI-DI"]}(17){combined_df.iloc[0]["EXPIRY DATE"]}(10){combined_df.iloc[0]["LOT"]}(21){combined_df.iloc[0]["UNIQUE NR"]}.csv'
 
+    combined_df = combined_df.drop(0)
+
+    combined_df = combined_df.sort_values('ORDER', ignore_index=True)
+
     combined_df = combined_df.drop("ORDER", axis='columns')
 
-    combined_df = combined_df.drop(0)
+    
 
     output_directory = "C:/Users/seppe/Desktop/ScannerProgramma"
     output_filename = "combined_scan_data.csv"

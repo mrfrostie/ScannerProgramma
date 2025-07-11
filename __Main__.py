@@ -207,13 +207,13 @@ def combineCsv():
 
     combined_df = combined_df[combined_df['UDI'].str.len().ge(30).fillna(False)].copy()
 
-    combined_df = combined_df.sort_values('ORDER')
+    combined_df = combined_df.sort_values('ORDER', ignore_index=True)
 
     Final_fileName = f'(01){combined_df.iloc[0]["UDI-DI"]}(17){combined_df.iloc[0]["EXPIRY DATE"]}(10){combined_df.iloc[0]["LOT"]}(21){combined_df.iloc[0]["UNIQUE NR"]}.csv'
 
-    combined_df = combined_df.drop(0)
-
     combined_df = combined_df.drop("ORDER", axis='columns')
+
+    combined_df = combined_df.drop(0)
 
     output_directory = "C:/Users/seppe/Desktop/ScannerProgramma"
     output_filename = "combined_scan_data.csv"
@@ -237,11 +237,11 @@ def combineCsv():
 
     print(f"\nSuccessfully combined {len(all_files)} CSV files into: {output_filepath}")
 
-    for filename in os.listdir(path):
-        file_path = os.path.join(path, filename)
-        if os.path.isfile(file_path):
-           os.remove(file_path)
-           print(filename, "is removed")
+    #for filename in os.listdir(path):
+    #    file_path = os.path.join(path, filename)
+    #    if os.path.isfile(file_path):
+    #       os.remove(file_path)
+    #       print(filename, "is removed")
 
     _filename = Final_fileName
     return Final_fileName
@@ -389,14 +389,14 @@ def Verwijderen(_filename):
 
     df1_rows_not_in_df2.to_csv(f"{_filename}_FouteVerwijderd.csv", index=False, sep=';')
 
-    for filename in os.listdir(path):
-        file_path = os.path.join(path, filename)
-        if os.path.isfile(file_path):
-           os.remove(file_path)
-           print(filename, "is removed")
+    #for filename in os.listdir(path):
+    #    file_path = os.path.join(path, filename)
+    #    if os.path.isfile(file_path):
+    #       os.remove(file_path)
+    #       print(filename, "is removed")
 
 if __name__ == "__main__":
-    #combineCsv()
+    combineCsv()
     #searchForCode()
-    Interface()
-    #Verwijderen(_filename)
+    #Interface()
+    #Verwijderen()

@@ -237,11 +237,11 @@ def combineCsv():
 
     print(f"\nSuccessfully combined {len(all_files)} CSV files into: {output_filepath}")
 
-    #for filename in os.listdir(path):
-    #    file_path = os.path.join(path, filename)
-    #    if os.path.isfile(file_path):
-    #       os.remove(file_path)
-    #       print(filename, "is removed")
+    for filename in os.listdir(path):
+        file_path = os.path.join(path, filename)
+        if os.path.isfile(file_path):
+           os.remove(file_path)
+           print(filename, "is removed")
 
     _filename = Final_fileName
     return Final_fileName
@@ -389,14 +389,14 @@ def Verwijderen(_filename):
 
     df1_rows_not_in_df2.to_csv(f"{_filename}_FouteVerwijderd.csv", index=False, sep=';')
 
-    #for filename in os.listdir(path):
-    #    file_path = os.path.join(path, filename)
-    #    if os.path.isfile(file_path):
-    #       os.remove(file_path)
-    #       print(filename, "is removed")
+    for filename in os.listdir(path):
+        file_path = os.path.join(path, filename)
+        if os.path.isfile(file_path):
+           os.remove(file_path)
+           print(filename, "is removed")
 
 if __name__ == "__main__":
-    combineCsv()
+    #combineCsv()
     #searchForCode()
-    #Interface()
+    Interface()
     #Verwijderen()

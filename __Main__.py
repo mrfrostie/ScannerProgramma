@@ -8,15 +8,16 @@ import glob
 import time
 import os
 
-path = "C:/Users/seppe/Desktop/Scan_Data"
+path = "C:/Users/ww-in/Desktop/scan_Data"
 _filename = ""
 status = ""
 
 def StartScanning() :
-    if status != "Stopped" : 
-        p.click(x=432, y=1051)
-        p.click(x=59, y=961)
-        p.click(x=479, y=1044)
+    if status == "Stopped" : 
+        p.click(x=509, y=740)
+        p.click(x=36, y=674)
+        p.click(x=420, y=741)
+        #p.click(x=516, y=650)
 
 
 def Interface() :
@@ -86,8 +87,10 @@ def Interface() :
             # Turn on
             dpg.bind_item_theme(sender, button_data['on_theme'])
             dpg.set_value(statustext, "Status: Started scanning for Deleting")
+            status = "Scanning for deleting"
             button_data['state'] = True
         dpg.set_item_user_data(sender, button_data)
+
 
     def eindeDoos() :
         StartScanning()
@@ -120,7 +123,9 @@ def Interface() :
         with dpg.group(horizontal=True):
             dpg.add_button(label="Einde Doos", callback = eindeDoos, width = 200, height = 50)
             dpg.add_button(label="Nieuwe Doos", callback = StartScanning, width = 200, height = 50)
-        inputFoutPotje = dpg.add_input_text(label = "nr fout potje")
+        with dpg.group(horizontal= True):
+            inputFoutPotje = dpg.add_input_text(label = "nr fout potje")
+            dpg.add_button(labe="Handmatig Verwijderen", callback = searchForCode)
 
         with dpg.group(horizontal=True):
             dpg.add_button(label="Start/stop scannen (Verwijderen)", tag="Toggle_ScanStartVerwijder", callback=toggle_buttonStartScannenVerwijderen, width = 350, height = 50)
@@ -158,6 +163,7 @@ def get_screen_dimensions_tkinter():
     return screen_width, screen_height
 
 def combineCsv():
+    global status
     global _filename
     all_files = glob.glob(os.path.join(path, "*.csv"))
 
@@ -208,6 +214,7 @@ def combineCsv():
     combined_df = combined_df.rename(columns={"Datacode-1:String" : "UDI"})
 
     combined_df = combined_df[combined_df['UDI'].str.len().ge(30).fillna(False)].copy()
+    combined_df = combined_df[:-2]
 
     combined_df = combined_df.sort_values('ORDER', ignore_index=True, ascending=False)
 
@@ -217,9 +224,11 @@ def combineCsv():
 
     combined_df = combined_df.sort_values('ORDER', ignore_index=True)
 
+    
+
     combined_df = combined_df.drop("ORDER", axis='columns')
 
-    output_directory = "C:/Users/seppe/Desktop/ScannerProgramma"
+    output_directory = "C:/Users/ww-in/Desktop/ScannerProgramma"
     output_filename = "combined_scan_data.csv"
     
     os.makedirs(output_directory, exist_ok=True) 
@@ -227,7 +236,7 @@ def combineCsv():
     output_filepath = os.path.join(output_directory, output_filename)
     combined_df.to_csv(output_filepath, index=False)
 
-    reader = csv.reader(open("combined_scan_data.csv", "r"), delimiter=',')
+    reader = csv.reader(open("C:/Users/ww-in/Desktop/ScannerProgramma/combined_scan_data.csv", "r"), delimiter=',')
     writer = csv.writer(open("output.csv", 'w'), delimiter=';')
     writer.writerows(reader)
 
@@ -239,14 +248,15 @@ def combineCsv():
 
     os.remove("output.csv")
 
-    print(f"\nSuccessfully combined {len(all_files)} CSV files into: {output_filepath}")
+    print(f"\nSuccessfully combined {len(all_files)} CSV files into: {output_filepath}, doc made {Final_fileName}")
 
-    #for filename in os.listdir(path):
-    #    file_path = os.path.join(path, filename)
-    #    if os.path.isfile(file_path):
-    #       os.remove(file_path)
-    #       print(filename, "is removed")
+    for filename in os.listdir(path):
+        file_path = os.path.join(path, filename)
+        if os.path.isfile(file_path):
+           os.remove(file_path)
+           print(filename, "is removed")
 
+    status = "ready"
     _filename = Final_fileName
     return Final_fileName
 
@@ -307,8 +317,7 @@ def searchForCode() :
     except Exception as e:
         print(f"nr {FoutPotje} not found")
 
-
-    output_directory = "C:/Users/seppe/Desktop/ScannerProgramma"
+    output_directory = "C:/Users/ww-in/Desktop/ScannerProgramma"
     output_filename = "combined_scan_data.csv"
     
     os.makedirs(output_directory, exist_ok=True) 
@@ -393,11 +402,11 @@ def Verwijderen(_filename):
 
     df1_rows_not_in_df2.to_csv(f"{_filename}_FouteVerwijderd.csv", index=False, sep=';')
 
-    #for filename in os.listdir(path):
-    #    file_path = os.path.join(path, filename)
-    #    if os.path.isfile(file_path):
-    #       os.remove(file_path)
-    #       print(filename, "is removed")
+    for filename in os.listdir(path):
+        file_path = os.path.join(path, filename)
+        if os.path.isfile(file_path):
+           os.remove(file_path)
+           print(filename, "is removed")
 
 if __name__ == "__main__":
     #combineCsv()

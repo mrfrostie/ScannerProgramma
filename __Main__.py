@@ -259,7 +259,7 @@ def combineCsv():
            os.remove(file_path)
            print(filename, "is removed")
 
-    tkinter.messagebox.showinfo(title="Data Verwerking", message=f"Data Verwerking is klaar, je kan verder gaan met scannen")
+    tkinter.messagebox.showinfo(title="Data Verwerking", message=f"Data Verwerking is klaar, je kan verder gaan")
     
     status = "ready"
     _filename = Final_fileName
@@ -298,7 +298,7 @@ def searchForCode2(_filename) :
     os.remove("output.csv")
 
     print(f"done made file as {_filename}")
-    tkinter.messagebox.showinfo(title="Handmatig verdwijderen", message=f"De nummer is verwijderd")
+    tkinter.messagebox.showinfo(title="Handmatig verwijderen", message=f"f{FoutPotje} is verwijderd")
 
 
 def Verwijderen(_filename):

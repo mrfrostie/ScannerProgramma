@@ -1,3 +1,4 @@
+import tkinter.messagebox
 import pandas as pd
 import dearpygui.dearpygui as dpg
 from dearpygui import *
@@ -8,6 +9,7 @@ import glob
 import time
 import os
 
+#"C:/Users/ww-in/Desktop/scan_Data"
 path = "C:/Users/ww-in/Desktop/scan_Data"
 _filename = ""
 status = ""
@@ -257,6 +259,8 @@ def combineCsv():
            os.remove(file_path)
            print(filename, "is removed")
 
+    tkinter.messagebox.showinfo(title="Data Verwerking", message=f"Data Verwerking is klaar, je kan verder gaan met scannen")
+    
     status = "ready"
     _filename = Final_fileName
     return Final_fileName
@@ -294,6 +298,8 @@ def searchForCode2(_filename) :
     os.remove("output.csv")
 
     print(f"done made file as {_filename}")
+    tkinter.messagebox.showinfo(title="Handmatig verdwijderen", message=f"De nummer is verwijderd")
+
 
 def Verwijderen(_filename):
     all_files = glob.glob(os.path.join(path, "*.csv"))

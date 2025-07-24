@@ -243,7 +243,7 @@ def Interface() :
             dpg.add_spacer(height=20)
 
         with dpg.group():
-            EstopBtn = dpg.add_button(label="Emergency Stop", callback=Estop, width = 200, height = 50, pos=[width - 210, height - 80]git)
+            EstopBtn = dpg.add_button(label="Emergency Stop", callback=Estop, width = 200, height = 50, pos=[width - 210, height - 80])
             statustext = dpg.add_text(default_value=f"Status: Stopped", pos=[10, height - 60], indent=50)
 
     dpg.bind_item_theme(startbtn, startButtonTheme)

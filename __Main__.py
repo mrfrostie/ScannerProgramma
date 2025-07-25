@@ -235,7 +235,7 @@ def Interface() :
             inputFoutPotje = dpg.add_input_text(label = "nr fout potje", width=200, indent=50)
 
         dpg.add_button(label="Handmatig Verwijderen", callback=searchForCode1, width=250,height=50, indent=50)
-        dpg.add_spacer(height=250)
+        dpg.add_spacer(height=150)
 
         with dpg.group():
             VerwijderBtn = dpg.add_button(label="Verwijderen", tag="Toggle_verwijderBtn", callback=toggle_buttonVerwijderen_callback, width = 200, height = 50, indent=50)

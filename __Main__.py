@@ -31,28 +31,28 @@ def Interface() :
     width = int(width/2)
 
     dpg.create_context()
-    dpg.create_viewport(width=width, height=height)
+    dpg.create_viewport(width=width, height=height, title="Scanner")
     dpg.setup_dearpygui()
 
-    def toggle_buttonStart_callback(sender, data):
-        global status
-        StartScanning()
-
-        button_data = dpg.get_item_user_data(sender)
-        current_state = button_data['state']
-        if current_state:
-            dpg.bind_item_theme(sender, button_data['off_theme'])
-            dpg.set_item_label(startbtn, "Start")
-            dpg.set_value(statustext, "Status: Stopped")
-            status = "Stopped"
-            button_data['state'] = False
-        else:
-            # Turn on
-            dpg.bind_item_theme(sender, button_data['on_theme'])
-            dpg.set_item_label(startbtn, "Stop")
-            dpg.set_value(statustext, "Status: Started")
-            button_data['state'] = True
-        dpg.set_item_user_data(sender, button_data)
+    #def toggle_buttonStart_callback(sender, data):
+    #    global status
+    #    StartScanning()
+    #
+    #    button_data = dpg.get_item_user_data(sender)
+    #    current_state = button_data['state']
+    #    if current_state:
+    #        dpg.bind_item_theme(sender, button_data['off_theme'])
+    #        dpg.set_item_label(startbtn, "Start")
+    #        dpg.set_value(statustext, "Status: Stopped")
+    #        status = "Stopped"
+    #        button_data['state'] = False
+    #    else:
+    #        # Turn on
+    #        dpg.bind_item_theme(sender, button_data['on_theme'])
+    #        dpg.set_item_label(startbtn, "Stop")
+    #        dpg.set_value(statustext, "Status: Started")
+    #        button_data['state'] = True
+    #    dpg.set_item_user_data(sender, button_data)
 
     def toggle_buttonVerwijderen_callback(sender, data):
         Verwijderen(_filename)
@@ -95,8 +95,13 @@ def Interface() :
         dpg.set_item_user_data(sender, button_data)
 
     def eindeDoos() :
+        dpg.set_value(statustext, "Stopped")
         StartScanning()
         combineCsv()
+
+    def nieuweDoos():
+        dpg.set_value(statustext, "Started")
+        StartScanning()
 
     def searchForCode1() :
         searchForCode2(_filename)
@@ -213,14 +218,15 @@ def Interface() :
             dpg.add_theme_color(dpg.mvNodeCol_GridLine, (180, 180, 180, 100), category=dpg.mvThemeCat_Nodes)
 
     with dpg.window(label="Scanner Interface", width=width, height=height):
-        with dpg.group(horizontal=True):
-            startbtn = dpg.add_button(label="Start", tag="toggle_button" ,callback=toggle_buttonStart_callback, width = 200, height = 50, pos=[(width/2)-100,50])
-            button_data = {'state': False, 'on_theme': stopButtonTheme, 'off_theme': startButtonTheme}
-            dpg.set_item_user_data("toggle_button", button_data)
-            dpg.bind_item_theme("toggle_button", stopButtonTheme)
+        #with dpg.group(horizontal=True):
+            #startbtn = dpg.add_button(label="Start", tag="toggle_button" ,callback=toggle_buttonStart_callback, width = 200, height = 50, pos=[(width/2)-100,50])
+            #button_data = {'state': False, 'on_theme': stopButtonTheme, 'off_theme': startButtonTheme}
+            #dpg.set_item_user_data("toggle_button", button_data)
+            #dpg.bind_item_theme("toggle_button", stopButtonTheme)
             
         with dpg.group(horizontal=False):
-            dpg.add_button(label="Nieuwe Doos", callback = StartScanning, width = 200, height = 50, indent=50)
+            dpg.add_spacer(height=50)
+            dpg.add_button(label="Start/Nieuwe Doos", callback = nieuweDoos, width = 200, height = 50, indent=50)
             dpg.add_spacer(height=20)
             dpg.add_button(label="Einde Doos", callback = eindeDoos, width = 200, height = 50, indent=50)
             dpg.add_spacer(height=30)
@@ -246,7 +252,7 @@ def Interface() :
             EstopBtn = dpg.add_button(label="Emergency Stop", callback=Estop, width = 200, height = 50, pos=[width - 210, height - 80])
             statustext = dpg.add_text(default_value=f"Status: Stopped", pos=[10, height - 60], indent=50)
 
-    dpg.bind_item_theme(startbtn, startButtonTheme)
+    #dpg.bind_item_theme(startbtn, startButtonTheme)
     dpg.bind_item_theme(EstopBtn, stopButtonTheme)
     dpg.bind_item_theme(inputFoutPotje, Theme_input)
     dpg.bind_theme(light_theme)

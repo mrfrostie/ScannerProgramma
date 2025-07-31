@@ -68,9 +68,9 @@ def Interface() :
         else:
             # Turn on
             dpg.bind_item_theme(sender, button_data['on_theme'])
-            dpg.set_value(statustext, "Status: Verwijderen")
+            dpg.set_value(statustext, "STATUS: Verwijderen")
             time.sleep(0.5)
-            dpg.set_value(statustext, "Status: Stopped")
+            dpg.set_value(statustext, "STATUS: Stopped")
             status = "Stopped"
             button_data['state'] = True
         dpg.set_item_user_data(sender, button_data)
@@ -83,24 +83,24 @@ def Interface() :
         if current_state:
             # Turn off
             dpg.bind_item_theme(sender, button_data['off_theme'])
-            dpg.set_value(statustext, "Status: Stopped")
+            dpg.set_value(statustext, "STATUS: Stopped")
             status ="Stopped"
             button_data['state'] = False
         else:
             # Turn on
             dpg.bind_item_theme(sender, button_data['on_theme'])
-            dpg.set_value(statustext, "Status: Started scanning for Deleting")
+            dpg.set_value(statustext, "STATUS: Started scanning for Deleting")
             status = "Scanning for deleting"
             button_data['state'] = True
         dpg.set_item_user_data(sender, button_data)
 
     def eindeDoos() :
-        dpg.set_value(statustext, "Status: Stopped")
+        dpg.set_value(statustext, "STATUS: Stopped")
         StartScanning()
         combineCsv()
 
     def nieuweDoos():
-        dpg.set_value(statustext, "Status: Started")
+        dpg.set_value(statustext, "STATUS: Started")
         StartScanning()
 
     def searchForCode1() :
@@ -250,7 +250,7 @@ def Interface() :
 
         with dpg.group():
             EstopBtn = dpg.add_button(label="Emergency Stop", callback=Estop, width = 200, height = 50, pos=[width - 210, height - 80])
-            statustext = dpg.add_text(default_value=f"Status: Stopped", pos=[10, height - 60], indent=50)
+            statustext = dpg.add_text(default_value=f"STATUS: Stopped", pos=[10, height - 60], indent=50)
 
     #dpg.bind_item_theme(startbtn, startButtonTheme)
     dpg.bind_item_theme(EstopBtn, stopButtonTheme)

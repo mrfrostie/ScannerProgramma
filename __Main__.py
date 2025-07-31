@@ -95,12 +95,12 @@ def Interface() :
         dpg.set_item_user_data(sender, button_data)
 
     def eindeDoos() :
-        dpg.set_value(statustext, "Stopped")
+        dpg.set_value(statustext, "Status: Stopped")
         StartScanning()
         combineCsv()
 
     def nieuweDoos():
-        dpg.set_value(statustext, "Started")
+        dpg.set_value(statustext, "Status: Started")
         StartScanning()
 
     def searchForCode1() :

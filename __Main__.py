@@ -405,7 +405,7 @@ def searchForCode2(_filename) :
     os.remove("output.csv")
 
     print(f"done made file as {_filename}")
-    tkinter.messagebox.showinfo(title="Handmatig verwijderen", message=f"f{FoutPotje} is verwijderd")
+    tkinter.messagebox.showinfo(title="Handmatig verwijderen", message=f"{FoutPotje} is verwijderd")
 
 
 def Verwijderen(_filename):

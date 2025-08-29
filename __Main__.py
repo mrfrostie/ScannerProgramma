@@ -8,16 +8,17 @@ import csv
 import glob
 import time
 import os
+import shutil
 
-#"C:/Users/ww-in/Desktop/scan_Data"
-path = "C:/Users/ww-in/Desktop/scan_Data"
+#"C:/Users/Productie/Desktop/scan_Data"
+path = "C:/Users/Productie/Desktop/scan_Data"
 _filename = ""
 status = ""
 
 def StartScanning() :
-    p.click(x=509, y=740)
-    p.click(x=36, y=674)
-    p.click(x=420, y=741)
+    p.click(x=596, y=1045)
+    p.click(x=53, y=965)
+    p.click(x=652, y=1047)
         #p.click(x=516, y=650)
 
 
@@ -341,7 +342,7 @@ def combineCsv():
 
     combined_df = combined_df.drop("ORDER", axis='columns')
 
-    output_directory = "C:/Users/ww-in/Desktop/ScannerProgramma"
+    output_directory = "C:/Users/Productie/Desktop/ScannerProgramma"
     output_filename = "combined_scan_data.csv"
     
     os.makedirs(output_directory, exist_ok=True) 
@@ -349,7 +350,7 @@ def combineCsv():
     output_filepath = os.path.join(output_directory, output_filename)
     combined_df.to_csv(output_filepath, index=False)
 
-    reader = csv.reader(open("C:/Users/ww-in/Desktop/ScannerProgramma/combined_scan_data.csv", "r"), delimiter=',')
+    reader = csv.reader(open("C:/Users/Productie/Desktop/ScannerProgramma/combined_scan_data.csv", "r"), delimiter=',')
     writer = csv.writer(open("output.csv", 'w'), delimiter=';')
     writer.writerows(reader)
 
@@ -369,6 +370,8 @@ def combineCsv():
            os.remove(file_path)
            print(filename, "is removed")
 
+    shutil.move(f"C:/Users/Productie/Desktop/ScannerProgramma/{Final_fileName}", f"V:/USI Boxlogs/{Final_fileName}")
+
     tkinter.messagebox.showinfo(title="Data Verwerking", message=f"Data Verwerking is klaar, je kan verder gaan")
     
     status = "ready"
@@ -387,7 +390,7 @@ def searchForCode2(_filename) :
 
     print(Openen_df)
 
-    output_directory = "C:/Users/ww-in/Desktop/ScannerProgramma"
+    output_directory = "C:/Users/Productie/Desktop/ScannerProgramma"
     output_filename = "combined_scan_data.csv"
     
     os.makedirs(output_directory, exist_ok=True) 
@@ -406,6 +409,8 @@ def searchForCode2(_filename) :
                 writer.writerow(row)
 
     os.remove("output.csv")
+
+    shutil.move(f"C:/Users/Productie/Desktop/ScannerProgramma/{_filename}", f"V:/USI Boxlogs/{_filename}")
 
     print(f"done made file as {_filename}")
     tkinter.messagebox.showinfo(title="Handmatig verwijderen", message=f"{FoutPotje} is verwijderd")

@@ -62,15 +62,15 @@ def Interface() :
         if current_state:
             # Turn off
             dpg.bind_item_theme(sender, button_data['off_theme'])
-            dpg.set_value(statustext, "Status: Stopped")
+            dpg.set_value(statustext, "STATUS: Stopped")
             status = "Stopped"
             button_data['state'] = False
         else:
             # Turn on
             dpg.bind_item_theme(sender, button_data['on_theme'])
-            dpg.set_value(statustext, "STATUS: Verwijderen")
+            dpg.set_value(statustext, "Status: Verwijderen")
             time.sleep(0.5)
-            dpg.set_value(statustext, "STATUS: Stopped")
+            dpg.set_value(statustext, "Status: Stopped")
             status = "Stopped"
             button_data['state'] = True
         dpg.set_item_user_data(sender, button_data)
@@ -89,7 +89,7 @@ def Interface() :
         else:
             # Turn on
             dpg.bind_item_theme(sender, button_data['on_theme'])
-            dpg.set_value(statustext, "STATUS: Started scanning for Deleting")
+            dpg.set_value(statustext, "Status: Started scanning for Deleting")
             status = "Scanning for deleting"
             button_data['state'] = True
         dpg.set_item_user_data(sender, button_data)
@@ -250,7 +250,7 @@ def Interface() :
 
         with dpg.group():
             EstopBtn = dpg.add_button(label="Emergency Stop", callback=Estop, width = 200, height = 50, pos=[width - 210, height - 80])
-            statustext = dpg.add_text(default_value=f"STATUS: Stopped", pos=[10, height - 60], indent=50)
+            statustext = dpg.add_text(default_value=f"Status: Stopped", pos=[10, height - 60], indent=50)
 
     #dpg.bind_item_theme(startbtn, startButtonTheme)
     dpg.bind_item_theme(EstopBtn, stopButtonTheme)
@@ -299,6 +299,7 @@ def combineCsv():
     combined_df = pd.concat(df_list, ignore_index=True).drop_duplicates(subset="Datacode-1:String", keep="first")
 
     combined_df["Datacode-1:String"] = combined_df["Datacode-1:String"].str.replace("","")
+    combined_df["Datacode-1:String"] = combined_df["Datacode-1:String"].str.replace("","")
     combined_df = combined_df[['Datacode-1:String']]  
     
     combined_df["UDI-DI"] = combined_df["Datacode-1:String"].str.slice(2,16)
@@ -327,6 +328,8 @@ def combineCsv():
 
     combined_df = combined_df[combined_df['UDI'].str.len().ge(30).fillna(False)].copy()
     combined_df = combined_df[:-2]
+
+    print(combined_df)
 
     combined_df = combined_df.sort_values('ORDER', ignore_index=True, ascending=False)
 
